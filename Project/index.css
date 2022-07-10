@@ -1,0 +1,112 @@
+.container {
+    /* float: left;
+    width : 50%; */
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+    border: 30px;
+    padding: 5px;
+}
+
+.clearfix::after{
+    content: ".";
+    display: none;
+    clear:both;
+    display: block;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.unhidden {
+    visibility: visible;
+}
+
+#biodataResult{
+    text-align: center;
+    height: 250px;
+    width: 95%;
+    position: fixed;
+    top: 10px;
+    right:10px;
+    background-color: white;
+    color: black;
+    overflow-y: scroll;
+}
+
+#userProfile {
+    width:100%;
+}
+
+label {
+    display: inline-block;
+}
+
+#navbar {
+    width:100%;
+}
+
+.mealImg {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 150px;
+}
+
+.infoBox, #menu .smallMealContainer{
+ text-align: center;
+ display:inline-block;  
+ width : 45%;
+ height: 330px;
+ padding: 5px;
+}
+
+.smallMealContainer{
+    width : 30%;
+    height: 250px;
+    padding: 5px;
+    margin: auto;
+    float: left;
+}
+
+.smallMealContainer > p {
+    font-size: 10px;
+}
+
+.infoBox{
+    overflow-y:scroll;
+}
+
+.closeBtn{
+    float:right;
+    top:10px;
+    right:10px;
+}
+
+.add {
+    width:28%;
+    height: 30px;
+    padding: 0 10px;
+    line-height: 30px;
+    font-size: 9 px;
+    margin: 2px;
+}
+
+#menu {
+    height:900px;
+    overflow-y: scroll;
+}
+
+
+#result > h5, .smallMealContainer > h6 {
+    margin: 0 0 5px 10px;
+}
+
+li{
+    font:10px;
+    margin: 0 0 3px 10px;
+}
