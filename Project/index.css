@@ -1,6 +1,5 @@
 .container {
-    /* float: left;
-    width : 50%; */
+    width:100%;
     margin: auto;
     text-align: center;
     justify-content: center;
@@ -16,27 +15,16 @@
 }
 
 .hidden {
-    visibility: hidden;
+    display: none;
 }
 
 .unhidden {
-    visibility: visible;
+    display: block;
 }
 
-#biodataResult{
-    text-align: center;
-    height: 250px;
-    width: 95%;
-    position: fixed;
-    top: 10px;
-    right:10px;
+.container #biodataResult{
     background-color: white;
-    color: black;
     overflow-y: scroll;
-}
-
-#userProfile {
-    width:100%;
 }
 
 label {
@@ -45,6 +33,13 @@ label {
 
 #navbar {
     width:100%;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#navbar > button {
+    width: 16%;
 }
 
 .mealImg {
@@ -103,10 +98,18 @@ label {
 
 
 #result > h5, .smallMealContainer > h6 {
-    margin: 0 0 5px 10px;
+    margin: 0 0 5px 0;
 }
 
 li{
     font:10px;
-    margin: 0 0 3px 10px;
+    margin: 0 0 3px 0;
+}
+
+.red {
+    color:rgb(192, 99, 99);
+}
+
+.green {
+    color: rgb(130, 189, 130);
 }

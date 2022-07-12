@@ -1,5 +1,6 @@
 window.onload=function(){
     //list of items
+    const userProfile = document.querySelector("#biodataContainer");
     const form = document.querySelector("#biodata");
     const biodataResult = document.querySelector("#biodataResult");
     const menu = document.querySelector("#menu");
@@ -10,6 +11,7 @@ window.onload=function(){
     const dinner = document.getElementById("dinner");
     
     // initialising the global variables;
+    let infoBoxIDArray = [];
     const initialValue =[0,0,0,0];
     let breakfastValue = [...initialValue]
     let lunchValue =[...initialValue];
@@ -17,6 +19,7 @@ window.onload=function(){
     let bmr = 0;
     let goalValue = 0;
     let protein = 0;
+    let adjProt = 0;
     let adjCal = 0;
     let adjbmr = 0;
     let actCal = 0;
@@ -25,34 +28,40 @@ window.onload=function(){
     let actFat = 0;
     
     const navbar = document.querySelector("#navbar");
-    const chickenBtn =document.querySelector("#Chicken");
-    const beefBtn =document.querySelector("#Beef");
-    const lambBtn =document.querySelector("#Lamb");
-    const seafoodBtn =document.querySelector("#Seafood");
-    const vegBtn =document.querySelector("#Vegetarian");
-    const veganBtn =document.querySelector("#Vegan");
+    // const chickenBtn =document.querySelector("#Chicken");
+    // const beefBtn =document.querySelector("#Beef");
+    // const lambBtn =document.querySelector("#Lamb");
+    // const seafoodBtn =document.querySelector("#Seafood");
+    // const vegBtn =document.querySelector("#Vegetarian");
+    // const veganBtn =document.querySelector("#Vegan");
 
     //function-list
     function navbarDeactivate () {
-        chickenBtn.disabled = true;
-        beefBtn.disabled = true;
-        lambBtn.disabled = true;
-        seafoodBtn.disabled = true;
-        vegBtn.disabled = true;
-        veganBtn.disabled = true;
+        navbar.className ="hidden";
+        // chickenBtn.disabled = true;
+        // beefBtn.disabled = true;
+        // lambBtn.disabled = true;
+        // seafoodBtn.disabled = true;
+        // vegBtn.disabled = true;
+        // veganBtn.disabled = true;
     }
 
     //Reset Value Function
     function resetValue () {
         navbarDeactivate();
         biodataResult.className = "hidden";
+        userProfile.className = "unhidden container";
         menu.innerHTML ="";
+        breakfast.innerHTML = "";
+        lunch.innerHTML = "";
+        dinner.innerHTML = "";
         breakfastValue = [...initialValue];
         lunchValue =[...initialValue];
         dinnerValue =[...initialValue];
         bmr = 0;
         goalValue = 0;
         protein = 0;
+        adjProt =0;
         adjCal = 0;
         adjbmr = 0;
         actCal = 0;
@@ -62,12 +71,13 @@ window.onload=function(){
     }
 
     function navbarActivate () {
-        chickenBtn.disabled = false;
-        beefBtn.disabled = false;
-        lambBtn.disabled = false;
-        seafoodBtn.disabled = false;
-        vegBtn.disabled = false;
-        veganBtn.disabled = false;
+        // chickenBtn.disabled = false;
+        // beefBtn.disabled = false;
+        // lambBtn.disabled = false;
+        // seafoodBtn.disabled = false;
+        // vegBtn.disabled = false;
+        // veganBtn.disabled = false;
+        navbar.className="unhidden";
     }
 
     function addMealValue (meal, mealText, cloneTarget, mealValue){
@@ -97,11 +107,9 @@ window.onload=function(){
     }
 
     function fetchFurtherInfo (mealID, containerID){
-        fetch (`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealID}`)
-        .then(r => r.json())
-        .then(data =>{
-            let mealContainer = menu.querySelector(`#${containerID}`);
+        let mealContainer = menu.querySelector(`#${containerID}`);
             let container = document.createElement("div");
+            container.setAttribute("id", mealID);
             container.className ="infoBox";
             //append to the next sibling i.e. insert after
 
@@ -120,6 +128,9 @@ window.onload=function(){
             let ingredientListTitle = document.createElement("h4");
             ingredientListTitle.innerText = "Ingredient List";
             container.appendChild(ingredientListTitle);
+        fetch (`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealID}`)
+        .then(r => r.json())
+        .then(data =>{
 
             let ingredientList = document.createElement("ul");
             container.appendChild(ingredientList);
@@ -150,7 +161,9 @@ window.onload=function(){
             container.appendChild(mealURL);
 
         })
-        .catch(console.error);
+        .catch(error => {
+            mealDescTitle.innerText = "Sorry, no instruction is found";
+        });
     };
 
     function fetchMeals (category){
@@ -263,7 +276,22 @@ window.onload=function(){
             actFat = breakfast[3]+lunch[3]+dinner[3];
 
             const actualCal = document.querySelector("#actualCal");
-            actualCal.innerText = `Calorie Intake: ${actCal} cals \nCarbs: ${actCarb}g Protein: ${actProt}g Fat: ${actFat}g.`;
+            actualCal.innerHTML = `Calorie Intake: <span id = "calNum">${actCal}cals</span> \nCarbs: ${actCarb}g Protein: <span id = "protNum">${actProt}g</span> Fat: ${actFat}g.`;
+
+            const calNum = document.querySelector('#calNum');
+            const protNum = document.querySelector("#protNum");
+
+            if (actCal > adjCal){
+                calNum.className = "red";
+            } else {
+                calNum.className = "green";
+            }
+
+            if (actProt < adjProt){
+                protNum.className ="red";
+            } else {
+                protNum.className ="green";
+            }
     };
 
     //onload deactivating navbar until further info being put
@@ -278,7 +306,8 @@ window.onload=function(){
         navbarActivate();
 
         //unhidden the MenuPlan
-        biodataResult.className = "unhidden";
+        biodataResult.className = "container unhidden";
+        userProfile.className = "hidden";
 
         //captioning value upon submission
         const userAge = document.querySelector("#age").value;
@@ -293,7 +322,7 @@ window.onload=function(){
         if (userSex === "female"){
             bmr = 655.1+9.563*userWeight+1.85*userHeight-4.676*userAge;
         } else if (userSex ==="male"){
-            bmr = 664.7+113.75*userWeight+5.003*userHeight-6.755*userAge;
+            bmr = 664.7+1.1375*userWeight+5.003*userHeight-6.755*userAge;
         }
 
         //adjusting the energyexpenditure to user level of activeness.// source:diabetes.org
@@ -365,10 +394,10 @@ window.onload=function(){
 
         adjCal = adjbmr+goalValue;
         const resultRecCal = document.createElement("li");
-        resultRecCal.innerText = `Recomended Calorie Intake : ${adjCal} Cal.`;
+        resultRecCal.innerHTML = `Recomended Calorie Intake : ${adjCal} Cal.`;
         result.appendChild(resultRecCal);
 
-        const adjProt = parseInt(userWeight*protein);
+        adjProt = parseInt(userWeight*protein);
         const resultRecProtein = document.createElement("li");
         resultRecProtein.innerText =`Recomended Protein Intake : ${adjProt} g.`;
         result.appendChild(resultRecProtein);
@@ -384,6 +413,7 @@ window.onload=function(){
 
     form.addEventListener("reset", function(e){
         resetValue();
+        navbarDeactivate();
     });
 
     navbar.addEventListener("click", function(e){
@@ -394,13 +424,20 @@ window.onload=function(){
     });
 
     menu.addEventListener("click", function(e){
+        let mealID = e.target.id;
         if (e.target.tagName === "IMG"){
-            let mealID = e.target.id;
+            if (infoBoxIDArray.find(element=> element === mealID)){
+                //if the same image has been clicked and the infoBox has not been closed, there will be no event listener
+            } else {
             fetchFurtherInfo(mealID, e.target.parentNode.id);
+            infoBoxIDArray.push(mealID);
+            }
         }
 
         if (e.target.innerText === "CLOSE"){
             e.target.parentNode.remove();
+            //enabling the same image being clicked again.
+            infoBoxIDArray = [...infoBoxIDArray.filter(function(val){val != e.target.parentNode.id})];
         }
 
         if (e.target.tagName === "BUTTON"){
@@ -423,8 +460,10 @@ window.onload=function(){
     });
 
     biodataResult.addEventListener("click", function(e){
+        if (e.target.tagName === "BUTTON"){
         form.reset();
         e.preventDefault();
         resetValue();
+        }
     })
 }
