@@ -28,22 +28,22 @@ window.onload=function(){
     let actFat = 0;
     
     const navbar = document.querySelector("#navbar");
-    // const chickenBtn =document.querySelector("#Chicken");
-    // const beefBtn =document.querySelector("#Beef");
-    // const lambBtn =document.querySelector("#Lamb");
-    // const seafoodBtn =document.querySelector("#Seafood");
-    // const vegBtn =document.querySelector("#Vegetarian");
-    // const veganBtn =document.querySelector("#Vegan");
+    const chickenBtn =document.querySelector("#Chicken");
+    const beefBtn =document.querySelector("#Beef");
+    const lambBtn =document.querySelector("#Lamb");
+    const seafoodBtn =document.querySelector("#Seafood");
+    const vegBtn =document.querySelector("#Vegetarian");
+    const veganBtn =document.querySelector("#Vegan");
+    const allBtn = [chickenBtn,beefBtn,lambBtn,seafoodBtn,vegBtn,veganBtn];
 
     //function-list
+
+    function navbarActivate () {
+        navbar.className="unhidden";
+    }
+
     function navbarDeactivate () {
         navbar.className ="hidden";
-        // chickenBtn.disabled = true;
-        // beefBtn.disabled = true;
-        // lambBtn.disabled = true;
-        // seafoodBtn.disabled = true;
-        // vegBtn.disabled = true;
-        // veganBtn.disabled = true;
     }
 
     //Reset Value Function
@@ -68,16 +68,6 @@ window.onload=function(){
         actProt = 0;
         actCarb = 0;
         actFat = 0;
-    }
-
-    function navbarActivate () {
-        // chickenBtn.disabled = false;
-        // beefBtn.disabled = false;
-        // lambBtn.disabled = false;
-        // seafoodBtn.disabled = false;
-        // vegBtn.disabled = false;
-        // veganBtn.disabled = false;
-        navbar.className="unhidden";
     }
 
     function addMealValue (meal, mealText, cloneTarget, mealValue){
@@ -108,32 +98,32 @@ window.onload=function(){
 
     function fetchFurtherInfo (mealID, containerID){
         let mealContainer = menu.querySelector(`#${containerID}`);
-            let container = document.createElement("div");
-            container.setAttribute("id", mealID);
-            container.className ="infoBox";
-            //append to the next sibling i.e. insert after
+        let infoBox = document.createElement("div");
+        infoBox.className ="infoBox";
+        mealContainer.appendChild(infoBox)
+        //append to the next sibling i.e. insert after
 
-            mealContainer.parentNode.insertBefore(container,mealContainer.nextSibling);
+        let menuPage = mealContainer.querySelector(`#menuPage`);
+        menuPage.setAttribute("class", "hidden");
 
-            // insertAfter(container, mealContainer);
+        let infoClose = document.createElement("button");
+        infoClose.className ="closeBtn"
+        infoClose.innerText = "Close";
+        infoBox.appendChild(infoClose);
 
-            let infoClose = document.createElement("button");
-            infoClose.className ="closeBtn"
-            infoClose.innerText = "Close";
-            container.appendChild(infoClose);
+        infoBox.appendChild(document.createElement("br"));
+        infoBox.appendChild(document.createElement("br"));
 
-            container.appendChild(document.createElement("br"));
-            container.appendChild(document.createElement("br"));
+        let ingredientListTitle = document.createElement("h4");
+        ingredientListTitle.innerText = "Ingredient List";
+        infoBox.appendChild(ingredientListTitle);
 
-            let ingredientListTitle = document.createElement("h4");
-            ingredientListTitle.innerText = "Ingredient List";
-            container.appendChild(ingredientListTitle);
         fetch (`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealID}`)
         .then(r => r.json())
         .then(data =>{
 
             let ingredientList = document.createElement("ul");
-            container.appendChild(ingredientList);
+            infoBox.appendChild(ingredientList);
         
             for (let i = 1; i<=20; i++){
                 let ingredientID = "strIngredient" + i;
@@ -149,16 +139,16 @@ window.onload=function(){
             };
             let mealDescTitle = document.createElement("h4");
             mealDescTitle.innerText = "Instructions";
-            container.appendChild(mealDescTitle);
+            infoBox.appendChild(mealDescTitle);
 
             let mealDesc = document.createElement("p");
             mealDesc.innerText = data.meals[0].strInstructions;
-            container.appendChild(mealDesc);
+            infoBox.appendChild(mealDesc);
 
             let mealURL = document.createElement("a");
             mealURL.innerText = "WATCH \u25B6";
             mealURL.href = data.meals[0].strYoutube;
-            container.appendChild(mealURL);
+            infoBox.appendChild(mealURL);
 
         })
         .catch(error => {
@@ -175,18 +165,23 @@ window.onload=function(){
             let smallMealContainer = document.createElement("div");
             smallMealContainer.setAttribute("class","smallMealContainer");
             let mealNameSearch = data.meals[i].strMeal.toLowerCase().split(" ").join("%20");
-            smallMealContainer.setAttribute("id", data.meals[i].strMeal.split(" ").join("-"));
+            //to tackle the '&' sign in some of the menuName, sanitising the 'string'
+            smallMealContainer.setAttribute("id", data.meals[i].strMeal.replace(/[^a-zA-Z0-9]/g,'').split(" ").join("-"));
             menu.appendChild(smallMealContainer);
+
+            let menuPage = document.createElement("div");
+            menuPage.setAttribute ("id", "menuPage");
+            smallMealContainer.appendChild(menuPage);
                 
             let mealName = document.createElement("h5");
             mealName.innerText = data.meals[i].strMeal;
-            smallMealContainer.appendChild(mealName);
+            menuPage.appendChild(mealName);
 
             let mealImg = document.createElement("img");
             mealImg.className = "mealImg";
             mealImg.setAttribute("id", data.meals[i].idMeal);
             mealImg.src = data.meals[i].strMealThumb;
-            smallMealContainer.appendChild(mealImg);
+            menuPage.appendChild(mealImg);
         
             //authentication of nutritionix-api, with the key.
             const options = {
@@ -208,7 +203,7 @@ window.onload=function(){
 
                 let calContainer = document.createElement("div");
                 calContainer.setAttribute("id", "calContainer");
-                smallMealContainer.appendChild(calContainer);
+                menuPage.appendChild(calContainer);
         
                 let mealCalTitle = document.createElement("span");
                 mealCalTitle.innerText = `Calories ${mealCal}Cal`;
@@ -240,9 +235,14 @@ window.onload=function(){
                 const calNFhidden = document.createElement("a");
                 calNFhidden.className="hidden";
                 calNFhidden.innerText = `${mealCal} ${mealCarbs} ${mealProtein} ${mealFat}`
-                smallMealContainer.appendChild(calNFhidden);
+                menuPage.appendChild(calNFhidden);
             })
-            .catch(err => console.error(err));
+            .catch(e => {
+                let errContainer = document.createElement("div");
+                errContainer.setAttribute ("class", "error");
+                errContainer.innerText = "Cannot determine the nutritional values"
+                menuPage.appendChild(errContainer);
+            });
             }
 
         })
@@ -257,7 +257,7 @@ window.onload=function(){
         }
     };
 
-    function heightConverter(num,unit){// all height will be converted to cm
+    function heightConverter(num, unit){// all height will be converted to cm
         if(unit === "cm"){
             return num;
         } else {
@@ -294,7 +294,7 @@ window.onload=function(){
             }
     };
 
-    //onload deactivating navbar until further info being put
+    //onload deactivating navbar until further info being put to initialise the page
     navbarDeactivate();
     resetValue();
 
@@ -409,6 +409,7 @@ window.onload=function(){
         updateValueText(actualCal);
 
         fetchMeals("Chicken");
+        chickenBtn.className = "selected"
     });
 
     form.addEventListener("reset", function(e){
@@ -420,6 +421,10 @@ window.onload=function(){
     if (e.target.tagName = "BUTTON"){
         menu.innerHTML="";
         fetchMeals(e.target.id);
+        allBtn.forEach(e=>{
+            e.classList.remove("selected");
+        });
+        e.target.className = "selected";
     }
     });
 
@@ -429,12 +434,13 @@ window.onload=function(){
             if (infoBoxIDArray.find(element=> element === mealID)){
                 //if the same image has been clicked and the infoBox has not been closed, there will be no event listener
             } else {
-            fetchFurtherInfo(mealID, e.target.parentNode.id);
+            fetchFurtherInfo(mealID, e.target.parentNode.parentNode.id);
             infoBoxIDArray.push(mealID);
             }
         }
 
         if (e.target.innerText === "CLOSE"){
+            e.target.parentNode.parentNode.querySelector("#menuPage").classList.remove("hidden");
             e.target.parentNode.remove();
             //enabling the same image being clicked again.
             infoBoxIDArray = [...infoBoxIDArray.filter(function(val){val != e.target.parentNode.id})];
@@ -443,19 +449,15 @@ window.onload=function(){
         if (e.target.tagName === "BUTTON"){
             if(e.target.innerText === "BREAKFAST"){
                 addMealValue(breakfast, "Breakfast", e.target.parentNode.parentNode, breakfastValue);
-                updateValue(breakfastValue,lunchValue,dinnerValue);
-
             }
             if(e.target.innerText === "LUNCH"){
                 addMealValue(lunch, "Lunch", e.target.parentNode.parentNode, lunchValue);
-                updateValue(breakfastValue,lunchValue,dinnerValue);
              
             }
             if(e.target.innerText === "DINNER"){
                 addMealValue(dinner, "Dinner", e.target.parentNode.parentNode, dinnerValue);
-                updateValue(breakfastValue,lunchValue,dinnerValue);
-           
             }
+            updateValue(breakfastValue,lunchValue,dinnerValue);
         }
     });
 

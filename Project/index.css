@@ -22,7 +22,8 @@
     display: block;
 }
 
-.container #biodataResult{
+#biodataResult{
+    max-height: 200px;
     background-color: white;
     overflow-y: scroll;
 }
@@ -55,9 +56,16 @@ label {
 .infoBox, #menu .smallMealContainer{
  text-align: center;
  display:inline-block;  
- width : 45%;
  height: 330px;
  padding: 5px;
+}
+
+#menu .smallMealContainer{
+    width:45%;
+}
+
+.infoBox{
+    overflow-y:scroll;
 }
 
 .smallMealContainer{
@@ -72,17 +80,18 @@ label {
     font-size: 10px;
 }
 
-.infoBox{
-    overflow-y:scroll;
-}
-
 .closeBtn{
     float:right;
     top:10px;
     right:10px;
 }
 
+.error{
+    background-color: rgb(215, 95, 95);
+}
+
 .add {
+    text-align: center;
     width:28%;
     height: 30px;
     padding: 0 10px;
@@ -101,6 +110,10 @@ label {
     margin: 0 0 5px 0;
 }
 
+#breakfast, #lunch, #dinner{
+    display: inline-block;
+    width: 30%;
+}
 li{
     font:10px;
     margin: 0 0 3px 0;
@@ -112,4 +125,10 @@ li{
 
 .green {
     color: rgb(130, 189, 130);
+}
+
+.selected {
+    background-color: black;
+    color: antiquewhite;
+    font-weight: 600;
 }
